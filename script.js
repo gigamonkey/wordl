@@ -23,6 +23,10 @@ function start(event) {
   }
 }
 
+//
+// Page setup
+// 
+
 function createBoard() {
   let board = document.getElementById("board");
   for (let i = 0; i < 6; i++) {
@@ -33,12 +37,12 @@ function createBoard() {
 function createRow() {
   let row = document.createElement("div");
   for (let j = 0; j < 5; j++) {
-    row.appendChild(createBox());
+    row.appendChild(createLetterBox());
   }
   return row;
 }
 
-function createBox() {
+function createLetterBox() {
   let box = document.createElement("span");
   box.classList.add("box");
   return box;
@@ -47,29 +51,31 @@ function createBox() {
 function createKeyboard() {
   let keyboard = document.getElementById("keyboard");
   for (let row of keyboardLayout) {
-    let div = document.createElement("div");
-    for (let letter of row) {
-      let key = document.createElement("span");
-      key.classList.add("letter");
-      key.innerText = letter;
-      keys[letter] = key;
-      key.onclick = keyClicked;
-      div.appendChild(key);
-    }
-    keyboard.appendChild(div);
+    keyboard.appendChild(createKeyboardRow(row));
   }
+  addExtraKeys(keyboard.childNodes[keyboardLayout.length - 1]);
+}
 
-  let bottomRow = keyboard.childNodes[keyboardLayout.length - 1];
+function createKeyboardRow(letters) {
+  let row = document.createElement("div");
+  for (let letter of letters) {
+    row.appendChild(createKeyboardKey(letter));
+  }
+  return row;
+}
+
+function createKeyboardKey(letter) {
+  let key = document.createElement("span");
+  key.classList.add("letter");
+  key.innerText = letter;
+  keys[letter] = key;
+  key.onclick = keyClicked;
+  return key;
+}
+
+function addExtraKeys(bottomRow) {
   bottomRow.insertBefore(makeEnterKey(), bottomRow.firstChild);
   bottomRow.append(makeDeleteKey());
-}
-
-function supressSelection() {
-  document.documentElement.addEventListener('mousedown', e => e.preventDefault());
-}
-
-function randomWord() {
-  return Array.from(words)[Math.floor(Math.random() * words.size)];
 }
 
 function makeEnterKey() {
@@ -82,10 +88,18 @@ function makeEnterKey() {
 
 function makeDeleteKey() {
   let del = document.createElement("span");
-  del.innerText = "del";
   del.classList.add("del");
+  del.innerText = "del";
   del.onclick = backspace;
   return del;
+}
+
+function supressSelection() {
+  document.documentElement.addEventListener('mousedown', e => e.preventDefault());
+}
+
+function randomWord() {
+  return Array.from(words)[Math.floor(Math.random() * words.size)];
 }
 
 function currentRow() {
@@ -125,25 +139,27 @@ function getGuess(row) {
 
 function checkGuess(row) {
   if (words.has(getGuess(row))) {
-
-    for (let i = 0; i < word.length; i++) {
-      let letter = row[i].innerText;
-      let c;
-      if (letter === word[i]) {
-        c = "in-position";
-      } else if (word.indexOf(letter) !== -1) {
-        c = "in-word";
-      } else {
-        c = "not-in-word";
-      }
-      row[i].classList.add(c);
-      colorKey(letter, c);
-    }
-      return true;
-    }
+    checkLetters(row);
+    return true;
   } else {
     document.getElementById("not-a-word").style.display = "block";
     return false;
+  }
+}
+
+function checkLetters(row) {
+  for (let i = 0; i < word.length; i++) {
+    let letter = row[i].innerText;
+    let c;
+    if (letter === word[i]) {
+      c = "in-position";
+    } else if (word.indexOf(letter) !== -1) {
+      c = "in-word";
+    } else {
+      c = "not-in-word";
+    }
+    row[i].classList.add(c);
+    colorKey(letter, c);
   }
 }
 
