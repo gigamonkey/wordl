@@ -126,9 +126,9 @@ function handleTyping(e) {
   }
 }
 
-function maybeAddLetter(key) {
+function maybeAddLetter(letter) {
   if (col < WORD_LENGTH) {
-    currentRow()[col++].innerText = key;
+    currentRow()[col++].innerText = letter;
   }
 }
 
