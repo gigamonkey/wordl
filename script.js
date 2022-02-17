@@ -1,4 +1,4 @@
-const keyboardLayout = [
+const QWERTY = [
   "qwertyuiop",
   "asdfghjkl",
   "zxcvbnm",
@@ -17,7 +17,7 @@ let keys = {};
 function start(event) {
   if (event.target.readyState === 'complete') {
     createBoard();
-    createKeyboard();
+    createKeyboard(QWERTY);
     supressSelection();
     word = randomWord();
   }
@@ -30,11 +30,11 @@ function start(event) {
 function createBoard() {
   let board = document.getElementById("board");
   for (let i = 0; i < 6; i++) {
-    board.appendChild(createRow());
+    board.appendChild(createBoardRow());
   }
 }
 
-function createRow() {
+function createBoardRow() {
   let row = document.createElement("div");
   for (let j = 0; j < 5; j++) {
     row.appendChild(createLetterBox());
@@ -48,12 +48,12 @@ function createLetterBox() {
   return box;
 }
 
-function createKeyboard() {
+function createKeyboard(layout) {
   let keyboard = document.getElementById("keyboard");
-  for (let row of keyboardLayout) {
+  for (let row of layout) {
     keyboard.appendChild(createKeyboardRow(row));
   }
-  addExtraKeys(keyboard.childNodes[keyboardLayout.length - 1]);
+  addExtraKeys(keyboard.childNodes[layout.length - 1]);
 }
 
 function createKeyboardRow(letters) {
@@ -73,9 +73,9 @@ function createKeyboardKey(letter) {
   return key;
 }
 
-function addExtraKeys(bottomRow) {
-  bottomRow.insertBefore(makeEnterKey(), bottomRow.firstChild);
-  bottomRow.append(makeDeleteKey());
+function addExtraKeys(row) {
+  row.insertBefore(makeEnterKey(), row.firstChild);
+  row.append(makeDeleteKey());
 }
 
 function makeEnterKey() {
@@ -98,6 +98,10 @@ function supressSelection() {
   document.documentElement.addEventListener('mousedown', e => e.preventDefault());
 }
 
+//
+// Game play
+//
+
 function randomWord() {
   return Array.from(words)[Math.floor(Math.random() * words.size)];
 }
@@ -118,48 +122,44 @@ function keyClicked(e) {
 }
 function submitGuess() {
   if (col === word.length) {
-    if (checkGuess(currentRow())) {
-      row++;
-      col = 0;
-    }
+    checkGuess(getGuess());
   }
 }
 
-function backspace() {
-  if (col > 0) {
-    col--;
-    nextBox().innerText = "";
-    document.getElementById("not-a-word").style.display = "none";
-  }
+function getGuess() {
+  return Array.from(currentRow()).map(c => c.innerText).join("");
 }
 
-function getGuess(row) {
-  return Array.from(row).map(c => c.innerText).join("");
-}
-
-function checkGuess(row) {
-  if (words.has(getGuess(row))) {
-    checkLetters(row);
-    return true;
+function checkGuess(guess) {
+  if (isWord(guess)) {
+    updateLetters(guess, currentRow());
+    row++;
+    col = 0;
   } else {
-    document.getElementById("not-a-word").style.display = "block";
-    return false;
+    showNotAWord();
   }
 }
 
-function checkLetters(row) {
+function isWord(word) {
+  return words.has(word);
+}
+
+function updateLetters(guess, row) {
   for (let i = 0; i < word.length; i++) {
-    let letter = row[i].innerText;
-    let c;
-    if (letter === word[i]) {
-      c = "in-position";
-    } else if (word.indexOf(letter) !== -1) {
-      c = "in-word";
-    } else {
-      c = "not-in-word";
-    }
+    let letter = guess[i];
+    let c = letterClass(letter, i);
     row[i].classList.add(c);
     colorKey(letter, c);
+  }
+}
+
+function letterClass(letter, i) {
+  if (letter === word[i]) {
+    return "in-position";
+  } else if (word.indexOf(letter) !== -1) {
+    return "in-word";
+  } else {
+    return "not-in-word";
   }
 }
 
@@ -173,4 +173,22 @@ function colorKey(letter, c) {
   }
 }
 
+function backspace() {
+  if (col > 0) {
+    col--;
+    nextBox().innerText = "";
+    hideNotAWord();
+  }
+}
+
+function showNotAWord() {
+  document.getElementById("not-a-word").style.display = "block";
+}
+
+function hideNotAWord() {
+  document.getElementById("not-a-word").style.display = "none";
+}
+
+
 document.addEventListener('readystatechange', start);
+
