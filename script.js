@@ -1,3 +1,6 @@
+const WORD_LENGTH = 5;
+const GUESSES = 6;
+
 const QWERTY = [
   "qwertyuiop",
   "asdfghjkl",
@@ -36,14 +39,14 @@ function start(event) {
 
 function createBoard() {
   let board = document.getElementById("board");
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < GUESSES; i++) {
     board.appendChild(createBoardRow());
   }
 }
 
 function createBoardRow() {
   let row = document.createElement("div");
-  for (let j = 0; j < 5; j++) {
+  for (let j = 0; j < WORD_LENGTH; j++) {
     row.appendChild(createLetterBox());
   }
   return row;
@@ -125,7 +128,7 @@ function keyClicked(e) {
 }
 
 function maybeAddLetter(key) {
-  if (col < 5) {
+  if (col < WORD_LENGTH) {
     currentRow()[col++].innerText = key;
   }
 }
