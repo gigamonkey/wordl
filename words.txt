@@ -2069,6 +2069,7 @@ rusty
 ryder
 saber
 sable
+sacks
 sadly
 saggy
 sahib
@@ -2079,6 +2080,7 @@ salle
 sally
 salma
 salon
+salsa
 salty
 salve
 salvo
@@ -2101,6 +2103,7 @@ savoy
 savvy
 sayer
 scala
+scald
 scale
 scalp
 scaly
