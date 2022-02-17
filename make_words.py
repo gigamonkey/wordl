@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Just a little utility to help make words.js from a file containing words.
+
 import sys
 
 PER_LINE = 12
