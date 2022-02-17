@@ -4,6 +4,8 @@ const QWERTY = [
   "zxcvbnm",
 ];
 
+const ALPHABET = QWERTY.join("");
+
 const WORD_LIST = "about other which their there first would these click price state email world music after video where books links years order items group under games could great hotel store terms right local those using phone forum based black check index being women today south pages found house photo power while three total place think north posts media water since guide board white small times sites level hours image title shall class still money every visit tools reply value press learn print stock point sales large table start model human movie march yahoo going study staff again april never users topic";
 
 const words = new Set(WORD_LIST.split(" "));
@@ -108,9 +110,23 @@ function supressSelection() {
 // Key handlers
 //
 
+function handleTyping(e) {
+  if (e.key === "Enter") {
+    submitGuess();
+  } else if (e.key === "Backspace") {
+    backspace();
+  } else if (ALPHABET.indexOf(e.key) !== -1) {
+    maybeAddLetter(e.key);
+  }
+}
+
 function keyClicked(e) {
+  maybeAddLetter(e.target.innerText);
+}
+
+function maybeAddLetter(key) {
   if (col < 5) {
-    currentRow()[col++].innerText = e.target.innerText;
+    currentRow()[col++].innerText = key;
   }
 }
 
@@ -196,3 +212,4 @@ function hideNotAWord() {
 }
 
 document.addEventListener('readystatechange', start);
+document.addEventListener('keydown', handleTyping);
