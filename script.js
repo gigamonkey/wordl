@@ -14,6 +14,7 @@ let word;
 
 let row = 0;
 let col = 0;
+let badGuesses = new Set();
 let keys = {};
 
 
@@ -127,7 +128,7 @@ function handleTyping(e) {
 }
 
 function maybeAddLetter(letter) {
-  if (col < WORD_LENGTH) {
+  if (col < WORD_LENGTH && !badGuesses.has(letter)) {
     currentRow()[col++].innerText = letter;
   }
 }
@@ -191,6 +192,7 @@ function letterClass(letter, i) {
   } else if (word.indexOf(letter) !== -1) {
     return "in-word";
   } else {
+    badGuesses.add(letter);
     return "not-in-word";
   }
 }
@@ -200,9 +202,6 @@ function colorKey(letter, c) {
   // Remove them all to clear out whatever one (if any) is there already.
   key.classList.remove("in-position", "in-word", "not-in-word");
   key.classList.add(c);
-  if (c === "not-in-word") {
-    key.onclick = undefined;
-  }
 }
 
 function showNotAWord() {
