@@ -2,7 +2,7 @@
 
 import sys
 
-PER_LINE = 20
+PER_LINE = 12
 
 with open(sys.argv[1]) as f:
     data = [line[:-1] for line in f]
