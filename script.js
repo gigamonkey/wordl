@@ -115,6 +115,7 @@ function backspace() {
   if (col > 0) {
     col--;
     nextBox().innerText = "";
+    document.getElementById("not-a-word").style.display = "none";
   }
 }
 
