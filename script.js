@@ -7,8 +7,6 @@ const QWERTY = [
   "zxcvbnm",
 ];
 
-const ALPHABET = QWERTY.join("");
-
 const WORD_LIST = "about other which their there first would these click price state email world music after video where books links years order items group under games could great hotel store terms right local those using phone forum based black check index being women today south pages found house photo power while three total place think north posts media water since guide board white small times sites level hours image title shall class still money every visit tools reply value press learn print stock point sales large table start model human movie march yahoo going study staff again april never users topic";
 
 const words = new Set(WORD_LIST.split(" "));
@@ -26,9 +24,7 @@ let keys = {};
 
 function start(event) {
   if (event.target.readyState === 'complete') {
-    createBoard();
-    createKeyboard(QWERTY);
-    supressSelection();
+    setupUI();
     word = randomWord();
   }
 }
@@ -36,6 +32,12 @@ function start(event) {
 //
 // Page setup
 // 
+
+function setupUI() {
+  createBoard();
+  createKeyboard(QWERTY);
+  supressSelection();
+}
 
 function createBoard() {
   let board = document.getElementById("board");
@@ -79,7 +81,7 @@ function createKeyboardKey(letter) {
   key.classList.add("letter");
   key.innerText = letter;
   keys[letter] = key;
-  key.onclick = keyClicked;
+  key.onclick = e => maybeAddLetter(letter);
   return key;
 }
 
@@ -105,6 +107,8 @@ function makeDeleteKey() {
 }
 
 function supressSelection() {
+  // This prevents mousing on the letters in the keyboard from selecting the text
+  // of the key which is distracting and ugly.
   document.documentElement.addEventListener('mousedown', e => e.preventDefault());
 }
 
@@ -114,17 +118,13 @@ function supressSelection() {
 //
 
 function handleTyping(e) {
-  if (e.key === "Enter") {
-    submitGuess();
+  if (e.key in keys) {
+    maybeAddLetter(e.key);
   } else if (e.key === "Backspace") {
     backspace();
-  } else if (ALPHABET.indexOf(e.key) !== -1) {
-    maybeAddLetter(e.key);
+  } else if (e.key === "Enter") {
+    submitGuess();
   }
-}
-
-function keyClicked(e) {
-  maybeAddLetter(e.target.innerText);
 }
 
 function maybeAddLetter(key) {
@@ -133,16 +133,16 @@ function maybeAddLetter(key) {
   }
 }
 
-function submitGuess() {
-  if (col === word.length) {
-    checkGuess(getGuess());
-  }
-}
-
 function backspace() {
   if (col > 0) {
     currentRow()[--col].innerText = "";
     hideNotAWord();
+  }
+}
+
+function submitGuess() {
+  if (col === word.length) {
+    checkGuess(getGuess());
   }
 }
 
