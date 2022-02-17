@@ -98,6 +98,32 @@ function supressSelection() {
   document.documentElement.addEventListener('mousedown', e => e.preventDefault());
 }
 
+
+//
+// Event handlers
+//
+
+function keyClicked(e) {
+  if (col < 5) {
+    nextBox().innerText = e.target.innerText;
+    col++;
+  }
+}
+function submitGuess() {
+  if (col === word.length) {
+    checkGuess(getGuess());
+  }
+}
+
+function backspace() {
+  if (col > 0) {
+    col--;
+    nextBox().innerText = "";
+    hideNotAWord();
+  }
+}
+
+
 //
 // Game play
 //
@@ -112,18 +138,6 @@ function currentRow() {
 
 function nextBox() {
   return currentRow()[col];
-}
-
-function keyClicked(e) {
-  if (col < 5) {
-    nextBox().innerText = e.target.innerText;
-    col++;
-  }
-}
-function submitGuess() {
-  if (col === word.length) {
-    checkGuess(getGuess());
-  }
 }
 
 function getGuess() {
@@ -173,14 +187,6 @@ function colorKey(letter, c) {
   }
 }
 
-function backspace() {
-  if (col > 0) {
-    col--;
-    nextBox().innerText = "";
-    hideNotAWord();
-  }
-}
-
 function showNotAWord() {
   document.getElementById("not-a-word").style.display = "block";
 }
@@ -188,7 +194,6 @@ function showNotAWord() {
 function hideNotAWord() {
   document.getElementById("not-a-word").style.display = "none";
 }
-
 
 document.addEventListener('readystatechange', start);
 
