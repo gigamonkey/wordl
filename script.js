@@ -137,6 +137,7 @@ function checkGuess(row) {
       }
       row[i].classList.add(c);
       colorKey(letter, c);
+    }
       return true;
     }
   } else {
