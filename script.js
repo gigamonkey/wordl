@@ -4,15 +4,20 @@ const QWERTY = [
   "zxcvbnm",
 ];
 
-let wordsList = "about other which their there first would these click price state email world music after video where books links years order items group under games could great hotel store terms right local those using phone forum based black check index being women today south pages found house photo power while three total place think north posts media water since guide board white small times sites level hours image title shall class still money every visit tools reply value press learn print stock point sales large table start model human movie march yahoo going study staff again april never users topic";
+const WORD_LIST = "about other which their there first would these click price state email world music after video where books links years order items group under games could great hotel store terms right local those using phone forum based black check index being women today south pages found house photo power while three total place think north posts media water since guide board white small times sites level hours image title shall class still money every visit tools reply value press learn print stock point sales large table start model human movie march yahoo going study staff again april never users topic";
 
-let words = new Set(wordsList.split(" "));
+const words = new Set(WORD_LIST.split(" "));
 
 let word;
 
 let row = 0;
 let col = 0;
 let keys = {};
+
+
+//
+// Entry point
+//
 
 function start(event) {
   if (event.target.readyState === 'complete') {
@@ -100,15 +105,15 @@ function supressSelection() {
 
 
 //
-// Event handlers
+// Key handlers
 //
 
 function keyClicked(e) {
   if (col < 5) {
-    nextBox().innerText = e.target.innerText;
-    col++;
+    currentRow()[col++].innerText = e.target.innerText;
   }
 }
+
 function submitGuess() {
   if (col === word.length) {
     checkGuess(getGuess());
@@ -117,8 +122,7 @@ function submitGuess() {
 
 function backspace() {
   if (col > 0) {
-    col--;
-    nextBox().innerText = "";
+    currentRow()[--col].innerText = "";
     hideNotAWord();
   }
 }
@@ -134,10 +138,6 @@ function randomWord() {
 
 function currentRow() {
   return document.getElementById("board").childNodes[row].childNodes;
-}
-
-function nextBox() {
-  return currentRow()[col];
 }
 
 function getGuess() {
@@ -196,4 +196,3 @@ function hideNotAWord() {
 }
 
 document.addEventListener('readystatechange', start);
-
