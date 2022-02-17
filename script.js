@@ -23,18 +23,25 @@ function start(event) {
   }
 }
 
-
 function createBoard() {
   let board = document.getElementById("board");
   for (let i = 0; i < 6; i++) {
-    let row = document.createElement("div");
-    for (let j = 0; j < 5; j++) {
-      let box = document.createElement("span");
-      box.classList.add("box");
-      row.appendChild(box);
-    }
-    board.appendChild(row);
+    board.appendChild(createRow());
   }
+}
+
+function createRow() {
+  let row = document.createElement("div");
+  for (let j = 0; j < 5; j++) {
+    row.appendChild(createBox());
+  }
+  return row;
+}
+
+function createBox() {
+  let box = document.createElement("span");
+  box.classList.add("box");
+  return box;
 }
 
 function createKeyboard() {
