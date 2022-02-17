@@ -18,14 +18,11 @@ function start(event) {
   if (event.target.readyState === 'complete') {
     createBoard();
     createKeyboard();
-    document.documentElement.addEventListener('mousedown', e => e.preventDefault());
+    supressSelection();
     word = randomWord();
   }
 }
 
-function randomWord() {
-  return Array.from(words)[Math.floor(Math.random() * words.size)];
-}
 
 function createBoard() {
   let board = document.getElementById("board");
@@ -58,6 +55,14 @@ function createKeyboard() {
   let bottomRow = keyboard.childNodes[keyboardLayout.length - 1];
   bottomRow.insertBefore(makeEnterKey(), bottomRow.firstChild);
   bottomRow.append(makeDeleteKey());
+}
+
+function supressSelection() {
+  document.documentElement.addEventListener('mousedown', e => e.preventDefault());
+}
+
+function randomWord() {
+  return Array.from(words)[Math.floor(Math.random() * words.size)];
 }
 
 function makeEnterKey() {
