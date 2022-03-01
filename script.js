@@ -31,7 +31,7 @@ function start(event) {
 
 //
 // Page setup
-// 
+//
 
 function setupUI() {
   createBoard();
@@ -178,23 +178,31 @@ function isWord(word) {
 }
 
 function updateLetters(guess, row) {
+  let classifications = classifyLetters(guess, word);
   for (let i = 0; i < word.length; i++) {
-    let letter = guess[i];
-    let c = letterClass(letter, i);
+    let c = classifications[i];
     row[i].classList.add(c);
-    colorKey(letter, c);
+    colorKey(guess[i], c);
   }
 }
 
-function letterClass(letter, i) {
-  if (letter === word[i]) {
-    return "in-position";
-  } else if (word.indexOf(letter) !== -1) {
-    return "in-word";
-  } else {
-    badGuesses.add(letter);
-    return "not-in-word";
+function classifyLetters(guess, word) {
+  let classifications = Array(word.length).fill(null);
+
+  let remainder = "";
+  for (let i = 0; i < word.length; i++) {
+    if (guess[i] === word[i]) {
+      classifications[i] = "in-position";
+    } else {
+      remainder += word[i];
+    }
   }
+  for (let i = 0; i < word.length; i++) {
+    if (classifications[i] === null) {
+      classifications[i] = remainder.indexOf(guess[i]) !== -1 ? "in-word" : "not-in-word";
+    }
+  }
+  return classifications;
 }
 
 function colorKey(letter, c) {
